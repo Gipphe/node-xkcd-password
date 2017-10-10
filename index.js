@@ -7,8 +7,6 @@
  * @version 2.0.0
  * @extends EventEmitter
  */
-var fs = require('fs')
-var path = require('path')
 var util = require('util')
 var events = require('events')
 var async = require('async')
@@ -85,28 +83,7 @@ XKCDPassword.prototype._initialize = function () {
   var self = this
 
   self.initialized = true
-
-  // We don't have a wordlist yet, and need to get one
-  if (!self.wordlist) {
-    if (!self.wordfile) {
-      // use internal wordlist
-      self.wordfile = path.join(__dirname, './vendor/mwords/113809of.fic')
-    }
-
-    // perform our file reading asynchronously, then call the _generate function
-    self.wordlist = []
-    require('readline').createInterface({
-      input: fs.createReadStream(self.wordfile),
-      terminal: false
-    }).on('line', function readWordFileLine (line) {
-      // append to internal wordlist
-      self.wordlist.push(line)
-    }).on('close', function resolveReadOfWordFile () {
-      // emit that we're ready, and call the next function
-      self.ready = true
-      self.emit('ready', self)
-    })
-  }
+  self.wordlist = require('./vendor/mwords/113809of.json')
 }
 
 /**
